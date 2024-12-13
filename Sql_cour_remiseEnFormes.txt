@@ -1,0 +1,34 @@
+
+Reponse 7 :
+
+Create view v_Date_Der as 
+	Select clientID,MAX(Date) as Date_Derniere
+	From Commandes
+	Group By clientID
+
+Select Nom,CommandeID,Date_Derniere
+From client c,v_Date_Der V,Commandes cmd
+where c.clientID = V.clientID and 
+V.clientID = cmd.clientID and 
+cmd.Date = V.Date_Derniere
+
+Reponse 8 :
+Select *
+Fron client c
+where NOT EXIST(Select * From Produit p
+		where categorie = 'cosmetique' and 
+NOT EXIST(Select * From DetailCommande d
+join Commande cmd on cmd.clientID = c.clientID
+where p.ProduitID = d.ProduitID and cmd.clientID = c.clientID))
+
+
+Reponse 9 :
+
+Select c.clientID,c.Nom
+From client.c
+Join commandes.cmd on c.clientID = cmd.clientID
+Join DetailCommades dc on cmd.commandesID = dc.commadneID
+Join Produit p on dc.produitID = p.produitID
+where p.Categorie ="Cosmetique"
+Group by(c.clientID,c.Nom)
+Having Count(Distinct p.produitID) = (Select count(*) From Produit where p.categorie = "Cosmetique")
